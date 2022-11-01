@@ -22,6 +22,7 @@ dependencies = [
  "directories",
  "reqwest",
  "serde",
+ "url",
 ]
 
 [[package]]

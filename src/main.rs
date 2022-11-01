@@ -5,6 +5,7 @@ use clap::Parser;
 use config::Config;
 use directories::BaseDirs;
 use serde::{Deserialize, Serialize};
+use url::Url;
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
@@ -34,11 +35,15 @@ struct AquConfig {
 
 impl AquConfig {
     fn get_login_url(&self) -> String {
-        self.qbittorrent_host.clone() + "/api/v2/auth/login"
+        self.get_parsed_host().join("/api/v2/auth/login").unwrap().to_string()
+    }
+
+    fn get_parsed_host(&self) -> Url {
+        Url::parse(self.qbittorrent_host.as_str()).expect("Invalid qbittorrent_host")
     }
 
     fn get_add_torrent_url(&self) -> String {
-        self.qbittorrent_host.clone() + "/api/v2/torrents/add"
+        self.get_parsed_host().join("/api/v2/torrents/add").unwrap().to_string()
     }
 }
 
