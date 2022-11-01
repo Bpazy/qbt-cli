@@ -1,9 +1,10 @@
-use std::collections::HashMap;
 use std::error::Error;
 use std::process::exit;
 
 use clap::Parser;
 use config::Config;
+use directories::BaseDirs;
+use serde::{Deserialize, Serialize};
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
@@ -19,28 +20,41 @@ const MAGNET_PREFIX: &str = "magnet:";
 fn main() -> Result<(), Box<dyn Error>> {
     let cli = Cli::parse();
     peek(&cli);
-    load_config().unwrap();
-    go_qbittorrent().unwrap();
+    let config_map = load_config();
+    go_qbittorrent(config_map);
     Ok(())
 }
 
-fn load_config() -> Result<(), Box<dyn Error>> {
+#[derive(Debug, Serialize, Deserialize)]
+struct AquConfig {
+    qbittorrent_host: String,
+    username: String,
+    password: String,
+}
+
+fn load_config() -> AquConfig {
+    let base_dirs = BaseDirs::new().unwrap();
+    let home_dir_path = base_dirs.home_dir();
+    let buf = home_dir_path.join(".config/aqu/config");
     let settings = Config::builder()
-        .add_source(config::File::with_name("$HOME/.config/aqu/config"))
-        .build()?;
+        .add_source(config::File::with_name(buf.to_str().unwrap()))
+        .build()
+        .expect("Failed to read config file");
 
-    // Print out our settings (as a HashMap)
-    println!("{:?}", settings.try_deserialize::<HashMap<String, String>>()?);
-    Ok(())
+    let map = settings.try_deserialize::<AquConfig>().expect("Failed to deserialize config file");
+    println!("{:?}", map);
+    map
 }
 
-fn go_qbittorrent() -> Result<(), Box<dyn Error>> {
+fn go_qbittorrent(config_map: AquConfig) {
     let client = reqwest::blocking::Client::new();
-    let resp = client.post("http://qbittorrent.example.com/api/v2/auth/login")
-        .form(&(("username", "admin"), ("password", "YOUR_PASSWORD")))
-        .send()?;
-    println!("{:#?}", resp.text()?);
-    Ok(())
+    let url = config_map.qbittorrent_host + "/api/v2/auth/login";
+    let url_str = url.as_str();
+    let resp = client.post(url_str)
+        .form(&(("username", config_map.username), ("password", config_map.password)))
+        .send()
+        .expect(format!("Failed to send request to qbittorrent server {}", url_str).as_str());
+    println!("{:#?}", resp.text().unwrap());
 }
 
 fn peek(cli: &Cli) {
