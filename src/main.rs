@@ -47,7 +47,7 @@ fn load_config() -> AquConfig {
 }
 
 fn go_qbittorrent(config_map: AquConfig) {
-    let client = reqwest::blocking::Client::new();
+    let client = reqwest::blocking::Client::builder().cookie_store(true).build().unwrap();
     let url = config_map.qbittorrent_host + "/api/v2/auth/login";
     let url_str = url.as_str();
     let resp = client.post(url_str)
