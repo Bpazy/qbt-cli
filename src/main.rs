@@ -32,6 +32,16 @@ struct AquConfig {
     password: String,
 }
 
+impl AquConfig {
+    fn get_login_url(&self) -> String {
+        self.qbittorrent_host.clone() + "/api/v2/auth/login"
+    }
+
+    fn get_add_torrent_url(&self) -> String {
+        self.qbittorrent_host.clone() + "/api/v2/torrents/add"
+    }
+}
+
 fn load_config() -> AquConfig {
     let base_dirs = BaseDirs::new().unwrap();
     let home_dir_path = base_dirs.home_dir();
@@ -46,12 +56,12 @@ fn load_config() -> AquConfig {
     map
 }
 
-fn go_qbittorrent(config_map: AquConfig) {
+fn go_qbittorrent(config: AquConfig) {
     let client = reqwest::blocking::Client::builder().cookie_store(true).build().unwrap();
-    let url = config_map.qbittorrent_host + "/api/v2/auth/login";
+    let url = config.get_login_url();
     let url_str = url.as_str();
     let resp = client.post(url_str)
-        .form(&(("username", config_map.username), ("password", config_map.password)))
+        .form(&(("username", config.username), ("password", config.password)))
         .send()
         .expect(format!("Failed to send request to qbittorrent server {}", url_str).as_str());
     println!("{:#?}", resp.text().unwrap());
