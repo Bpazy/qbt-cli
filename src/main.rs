@@ -16,13 +16,31 @@ struct Cli {
     uri: Option<String>,
 }
 
+impl Cli {
+    fn unwrap_uri(&self) -> String {
+        match self.uri.as_ref() {
+            None => {
+                println!("magnet uri is required");
+                exit(0)
+            }
+            Some(uri) => {
+                if uri.starts_with(MAGNET_PREFIX) {
+                    println!("url: {:?}", uri);
+                    return uri.clone();
+                } else {
+                    println!("magnet uri is invalid");
+                    exit(0);
+                }
+            }
+        }
+    }
+}
+
 const MAGNET_PREFIX: &str = "magnet:";
 
 fn main() -> Result<(), Box<dyn Error>> {
     let cli = Cli::parse();
-    peek(&cli);
-    let config = load_config();
-    go_qbittorrent(config);
+    go_qbittorrent(load_config(), cli.unwrap_uri());
     Ok(())
 }
 
@@ -57,35 +75,20 @@ fn load_config() -> AquConfig {
         .expect("Failed to read config file");
 
     let config = settings.try_deserialize::<AquConfig>().expect("Failed to deserialize config file");
-    println!("{:?}", config);
+    println!("Loaded config: {:?}", config);
     config
 }
 
-fn go_qbittorrent(config: AquConfig) {
+fn go_qbittorrent(config: AquConfig, magnet_uri: String) {
     let client = reqwest::blocking::Client::builder().cookie_store(true).build().unwrap();
-    let url = config.get_login_url();
-    let url_str = url.as_str();
-    let resp = client.post(url_str)
-        .form(&(("username", config.username), ("password", config.password)))
+    let resp = client.post(&config.get_login_url())
+        .form(&(("username", &config.username), ("password", &config.password)))
         .send()
-        .expect(format!("Failed to send request to qbittorrent server {}", url_str).as_str());
-    println!("{:#?}", resp.text().unwrap());
-}
+        .expect(format!("Login failed: {}", &config.get_login_url()).as_str());
+    println!("Login result: {:#?}", resp.text().unwrap());
 
-fn peek(cli: &Cli) {
-    println!("verbose: {:?}", cli);
-
-    match &cli.uri {
-        None => {
-            println!("magnet uri is required");
-            exit(0)
-        }
-        Some(uri) => {
-            if uri.starts_with(MAGNET_PREFIX) {
-                println!("url: {:?}", uri);
-            } else {
-                println!("magnet uri is invalid");
-            }
-        }
-    }
+    client.post(&config.get_add_torrent_url())
+        .form(&(("username", &config.username), ("password", &config.password)))
+        .send()
+        .expect(format!("Add torrent failed {}", &config.get_login_url()).as_str());
 }
