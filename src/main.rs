@@ -1,5 +1,4 @@
 use std::error::Error;
-use std::process::exit;
 
 use clap::Parser;
 use config::Config;
@@ -12,35 +11,29 @@ use url::Url;
 struct Cli {
     #[arg(short, long)]
     verbose: bool,
+    #[arg(short, long, default_value_t = String::from(""))]
+    rename: String,
+    #[arg(short, long, default_value_t = String::from(""))]
+    category: String,
 
-    uri: Option<String>,
-}
-
-impl Cli {
-    fn unwrap_uri(&self) -> String {
-        match self.uri.as_ref() {
-            None => {
-                println!("magnet uri is required");
-                exit(0)
-            }
-            Some(uri) => {
-                if uri.starts_with(MAGNET_PREFIX) {
-                    println!("url: {:?}", uri);
-                    return uri.clone();
-                } else {
-                    println!("magnet uri is invalid");
-                    exit(0);
-                }
-            }
-        }
-    }
+    #[arg(value_parser = uri_parser)]
+    uri: String,
 }
 
 const MAGNET_PREFIX: &str = "magnet:";
 
+fn uri_parser(s: &str) -> Result<String, String> {
+    if s.starts_with(MAGNET_PREFIX) {
+        Ok(s.to_string())
+    } else {
+        Err(format!("Uri must starts with '{}'", MAGNET_PREFIX))
+    }
+}
+
 fn main() -> Result<(), Box<dyn Error>> {
     let cli = Cli::parse();
-    go_qbittorrent(load_config(), cli.unwrap_uri());
+    println!("Cli: {:?}", &cli);
+    go_qbittorrent(load_config(), &cli);
     Ok(())
 }
 
@@ -79,7 +72,7 @@ fn load_config() -> AquConfig {
     config
 }
 
-fn go_qbittorrent(config: AquConfig, magnet_uri: String) {
+fn go_qbittorrent(config: AquConfig, cli: &Cli) {
     let client = reqwest::blocking::Client::builder().cookie_store(true).build().unwrap();
     let resp = client.post(&config.get_login_url())
         .form(&(("username", &config.username), ("password", &config.password)))
@@ -87,8 +80,19 @@ fn go_qbittorrent(config: AquConfig, magnet_uri: String) {
         .expect(format!("Login failed: {}", &config.get_login_url()).as_str());
     println!("Login result: {:#?}", resp.text().unwrap());
 
-    client.post(&config.get_add_torrent_url())
-        .form(&(("username", &config.username), ("password", &config.password)))
+    let resp = client.post(&config.get_add_torrent_url())
+        .form(&(
+            ("urls", &cli.uri),
+            ("autoTMM", true),
+            ("cookie", ""),
+            ("rename", &cli.rename),
+            ("category", &cli.category),
+            ("paused", "false"),
+            ("contentLayout", "Original"),
+            ("dlLimit", "NaN"),
+            ("upLimit", "NaN"),
+        ))
         .send()
-        .expect(format!("Add torrent failed {}", &config.get_login_url()).as_str());
+        .expect(format!("Add torrent failed {}", &config.get_add_torrent_url()).as_str());
+    println!("Add torrent result: {:#?}", resp.text().unwrap());
 }
