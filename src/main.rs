@@ -7,7 +7,8 @@ mod cli;
 mod config;
 
 fn main() -> Result<(), Box<dyn Error>> {
-    go_qbittorrent(AquConfig::load(), &Cli::load());
+    let cli = Cli::load();
+    go_qbittorrent(AquConfig::load(), &cli);
     Ok(())
 }
 
