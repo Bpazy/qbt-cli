@@ -56,9 +56,9 @@ fn load_config() -> AquConfig {
         .build()
         .expect("Failed to read config file");
 
-    let map = settings.try_deserialize::<AquConfig>().expect("Failed to deserialize config file");
-    println!("{:?}", map);
-    map
+    let config = settings.try_deserialize::<AquConfig>().expect("Failed to deserialize config file");
+    println!("{:?}", config);
+    config
 }
 
 fn go_qbittorrent(config: AquConfig) {
