@@ -1,75 +1,14 @@
 use std::error::Error;
 
-use clap::Parser;
-use config::Config;
-use directories::BaseDirs;
-use serde::{Deserialize, Serialize};
-use url::Url;
+use crate::cli::Cli;
+use crate::config::AquConfig;
 
-#[derive(Parser, Debug)]
-#[command(author, version, about, long_about = None)]
-struct Cli {
-    #[arg(short, long)]
-    verbose: bool,
-    #[arg(short, long, default_value_t = String::from(""))]
-    rename: String,
-    #[arg(short, long, default_value_t = String::from(""))]
-    category: String,
-
-    #[arg(value_parser = uri_parser)]
-    uri: String,
-}
-
-const MAGNET_PREFIX: &str = "magnet:";
-
-fn uri_parser(s: &str) -> Result<String, String> {
-    if s.starts_with(MAGNET_PREFIX) {
-        Ok(s.to_string())
-    } else {
-        Err(format!("Uri must starts with '{}'", MAGNET_PREFIX))
-    }
-}
+mod cli;
+mod config;
 
 fn main() -> Result<(), Box<dyn Error>> {
-    let cli = Cli::parse();
-    println!("Cli: {:?}", &cli);
-    go_qbittorrent(load_config(), &cli);
+    go_qbittorrent(AquConfig::load(), &Cli::load());
     Ok(())
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-struct AquConfig {
-    qbittorrent_host: String,
-    username: String,
-    password: String,
-}
-
-impl AquConfig {
-    fn get_login_url(&self) -> String {
-        self.get_parsed_host().join("/api/v2/auth/login").unwrap().to_string()
-    }
-
-    fn get_parsed_host(&self) -> Url {
-        Url::parse(self.qbittorrent_host.as_str()).expect("Invalid qbittorrent_host")
-    }
-
-    fn get_add_torrent_url(&self) -> String {
-        self.get_parsed_host().join("/api/v2/torrents/add").unwrap().to_string()
-    }
-}
-
-fn load_config() -> AquConfig {
-    let base_dirs = BaseDirs::new().unwrap();
-    let home_dir_path = base_dirs.home_dir();
-    let buf = home_dir_path.join(".config/aqu/config");
-    let settings = Config::builder()
-        .add_source(config::File::with_name(buf.to_str().unwrap()))
-        .build()
-        .expect("Failed to read config file");
-
-    let config = settings.try_deserialize::<AquConfig>().expect("Failed to deserialize config file");
-    println!("Loaded config: {:?}", config);
-    config
 }
 
 fn go_qbittorrent(config: AquConfig, cli: &Cli) {
