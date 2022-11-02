@@ -21,8 +21,8 @@ const MAGNET_PREFIX: &str = "magnet:";
 fn main() -> Result<(), Box<dyn Error>> {
     let cli = Cli::parse();
     peek(&cli);
-    let config_map = load_config();
-    go_qbittorrent(config_map);
+    let config = load_config();
+    go_qbittorrent(config);
     Ok(())
 }
 
