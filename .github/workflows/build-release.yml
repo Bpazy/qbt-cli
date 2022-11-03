@@ -1,0 +1,83 @@
+name: Upload Artifacts
+
+on:
+  release:
+    types: [ published ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  prepare_build:
+    name: Prepare build
+    runs-on: ubuntu-latest
+    outputs:
+      tag_name: ${{ steps.get_tag_name.outputs.tag_name }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Get tag name
+        id: get_tag_name
+        run: echo "::set-output name=tag_name::$(git describe --tags || git rev-parse --short HEAD)"
+
+  build_cross:
+    name: Build cross
+    needs: prepare_build
+    runs-on: ubuntu-latest
+    env:
+      RUST_BACKTRACE: full
+    strategy:
+      matrix:
+        include:
+          - target: i686-unknown-linux-musl
+            file: aqu
+            release_name: aqu-${{ needs.prepare_build.outputs.tag_name }}-i686-unknown-linux-musl
+          - target: x86_64-pc-windows-gnu
+            file: aqu.exe
+            release_name: aqu-${{ needs.prepare_build.outputs.tag_name }}-x86_64-pc-windows-gnu.exe
+          - target: x86_64-unknown-linux-gnu
+            file: aqu
+            release_name: aqu-${{ needs.prepare_build.outputs.tag_name }}-x86_64-unknown-linux-gnu
+          - target: x86_64-unknown-linux-musl
+            file: aqu
+            release_name: aqu-${{ needs.prepare_build.outputs.tag_name }}-x86_64-unknown-linux-musl
+          - target: armv7-unknown-linux-musleabihf
+            file: aqu
+            release_name: aqu-${{ needs.prepare_build.outputs.tag_name }}-armv7-unknown-linux-musleabihf
+          - target: armv7-unknown-linux-gnueabihf
+            file: aqu
+            release_name: aqu-${{ needs.prepare_build.outputs.tag_name }}-armv7-unknown-linux-gnueabihf
+          - target: arm-unknown-linux-gnueabi
+            file: aqu
+            release_name: aqu-${{ needs.prepare_build.outputs.tag_name }}-arm-unknown-linux-gnueabi
+          - target: arm-unknown-linux-gnueabihf
+            file: aqu
+            release_name: aqu-${{ needs.prepare_build.outputs.tag_name }}-arm-unknown-linux-gnueabihf
+          - target: arm-unknown-linux-musleabi
+            file: aqu
+            release_name: aqu-${{ needs.prepare_build.outputs.tag_name }}-arm-unknown-linux-musleabi
+          - target: arm-unknown-linux-musleabihf
+            file: aqu
+            release_name: aqu-${{ needs.prepare_build.outputs.tag_name }}-arm-unknown-linux-musleabihf
+          - target: aarch64-unknown-linux-gnu
+            file: aqu
+            release_name: aqu-${{ needs.prepare_build.outputs.tag_name }}-aarch64-unknown-linux-gnu
+          - target: aarch64-unknown-linux-musl
+            file: aqu
+            release_name: aqu-${{ needs.prepare_build.outputs.tag_name }}-aarch64-unknown-linux-musl
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install cross
+        run: cargo install cross
+
+      - name: Build ${{ matrix.target }}
+        run: cross build --release --target ${{ matrix.target }}
+
+      - name: Upload binaries to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: target/${{ matrix.target }}/release/${{ matrix.file }}
+          asset_name: ${{ matrix.release_name }}
+          tag: ${{ github.ref }}
+          overwrite: true
