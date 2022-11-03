@@ -17,7 +17,7 @@ jobs:
       - uses: actions/checkout@v3
       - name: Get tag name
         id: get_tag_name
-        run: echo "::set-output name=tag_name::$(git describe --tags || git rev-parse --short HEAD)"
+        run: echo "tag_name=$(git describe --tags || git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
   build_cross:
     name: Build cross
