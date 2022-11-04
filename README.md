@@ -1,5 +1,12 @@
-# aqu
+<h1 align="center">aqu</h1>
+
+<div align="center">
+
+[![Build And Test](https://github.com/Bpazy/aqu/actions/workflows/build-and-test.yml/badge.svg)](https://github.com/Bpazy/aqu/actions/workflows/build-and-test.yml)
+
 Add qbittorrent url quickly.
+
+</div>
 
 ## Install
 ```
