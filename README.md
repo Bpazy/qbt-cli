@@ -1,5 +1,6 @@
 # aqu
 [![Build And Test](https://github.com/Bpazy/aqu/actions/workflows/build-and-test.yml/badge.svg)](https://github.com/Bpazy/aqu/actions/workflows/build-and-test.yml)
+![LICENSE](https://img.shields.io/github/license/Bpazy/aqu)
 
 Add qbittorrent url quickly.
 
