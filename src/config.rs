@@ -25,17 +25,17 @@ impl AquConfig {
         println!("Loaded config: {:?}", config);
         config
     }
-    
+
     pub fn get_login_url(&self) -> String {
         self.get_parsed_host().join("/api/v2/auth/login").unwrap().to_string()
     }
 
-    pub fn get_parsed_host(&self) -> Url {
-        Url::parse(self.qbittorrent_host.as_str()).expect("Invalid qbittorrent_host")
-    }
-
     pub fn get_add_torrent_url(&self) -> String {
         self.get_parsed_host().join("/api/v2/torrents/add").unwrap().to_string()
+    }
+
+    pub fn get_parsed_host(&self) -> Url {
+        Url::parse(self.qbittorrent_host.as_str()).expect("Invalid qbittorrent_host")
     }
 }
 
