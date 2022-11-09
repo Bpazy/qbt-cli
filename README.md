@@ -78,7 +78,7 @@ Usage: qbt.exe list [OPTIONS]
 
 Options:
   -f, --filter <FILTER>      Filter torrent list by state. Allowed state filters: all, downloading, seeding, completed, paused, active, inactive, resumed, stalled, stalled_uploading, stalled_downloading, errored
-  -c, --category <CATEGORY>  Get torrents with the given category (empty string means "without category"; no "category" parameter means "any category" <- broken until #11748 is resolved). Remember to URL-encode the category name. For example, My category becomes My%20category
+  -c, --category <CATEGORY>  Get torrents with the given category (empty string means "without category"; no "category" parameter means "any category". Remember to URL-encode the category name. For example, My category becomes My%20category
   -t, --tag <TAG>            Get torrents with the given tag (empty string means "without tag"; no "tag" parameter means "any tag". Remember to URL-encode the category name. For example, My tag becomes My%20tag
   -s, --sort <SORT>          Sort torrents by given key. They can be sorted using any field of the response's JSON array (which are documented below) as the sort key
   -r, --reverse <REVERSE>    Enable reverse sorting. Defaults to false [possible values: true, false]

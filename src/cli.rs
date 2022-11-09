@@ -78,11 +78,13 @@ pub struct List {
     #[arg(short, long)]
     pub filter: Option<String>,
     /// Get torrents with the given category (empty string means "without category"; no "category" 
-    /// parameter means "any category" <- broken until #11748 is resolved). Remember to URL-encode the category name. For example, My category becomes My%20category
+    /// parameter means "any category". Remember to URL-encode the category name. 
+    /// For example, My category becomes My%20category
     #[arg(short, long)]
     pub category: Option<String>,
     /// Get torrents with the given tag (empty string means "without tag"; no "tag" parameter 
-    /// means "any tag". Remember to URL-encode the category name. For example, My tag becomes My%20tag
+    /// means "any tag". Remember to URL-encode the category name. 
+    /// For example, My tag becomes My%20tag
     #[arg(short, long)]
     pub tag: Option<String>,
     /// Sort torrents by given key. They can be sorted using any field of the response's JSON 
