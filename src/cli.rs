@@ -4,6 +4,7 @@ use log::debug;
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
 pub struct Cli {
+    /// Use verbose output
     #[arg(long)]
     pub verbose: bool,
     #[command(subcommand)]
