@@ -3,7 +3,7 @@ use clap::{Args, Parser, Subcommand};
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
 pub struct Cli {
-    #[arg(short, long)]
+    #[arg(long)]
     pub verbose: bool,
     #[command(subcommand)]
     pub command: Commands,
@@ -11,7 +11,8 @@ pub struct Cli {
 
 #[derive(Subcommand, Debug)]
 pub enum Commands {
-    Add(Add)
+    Add(Add),
+    List(List),
 }
 
 #[derive(Args, Debug)]
@@ -20,9 +21,28 @@ pub struct Add {
     pub rename: String,
     #[arg(short, long, default_value_t = String::from(""))]
     pub category: String,
-
     #[arg(value_parser = uri_parser)]
     pub uri: String,
+}
+
+#[derive(Args, Debug)]
+pub struct List {
+    #[arg(short, long)]
+    pub filter: Option<String>,
+    #[arg(short, long)]
+    pub category: Option<String>,
+    #[arg(short, long)]
+    pub tag: Option<String>,
+    #[arg(short, long)]
+    pub sort: Option<String>,
+    #[arg(short, long)]
+    pub reverse: Option<bool>,
+    #[arg(short, long)]
+    pub limit: Option<i32>,
+    #[arg(short, long)]
+    pub offset: Option<i32>,
+    #[arg(long)]
+    pub hashes: Option<String>,
 }
 
 const MAGNET_PREFIX: &str = "magnet:";

@@ -34,6 +34,10 @@ impl AquConfig {
         self.get_parsed_host().join("/api/v2/torrents/add").unwrap().to_string()
     }
 
+    pub fn get_query_torrent_list_url(&self) -> String {
+        self.get_parsed_host().join("/api/v2/torrents/info").unwrap().to_string()
+    }
+
     pub fn get_parsed_host(&self) -> Url {
         Url::parse(self.qbittorrent_host.as_str()).expect("Invalid qbittorrent_host")
     }
