@@ -73,20 +73,32 @@ pub struct Add {
 /// Get torrent list
 #[derive(Args, Debug)]
 pub struct List {
+    /// Filter torrent list by state. Allowed state filters: all, downloading, seeding, completed,
+    /// paused, active, inactive, resumed, stalled, stalled_uploading, stalled_downloading, errored
     #[arg(short, long)]
     pub filter: Option<String>,
+    /// Get torrents with the given category (empty string means "without category"; no "category" 
+    /// parameter means "any category" <- broken until #11748 is resolved). Remember to URL-encode the category name. For example, My category becomes My%20category
     #[arg(short, long)]
     pub category: Option<String>,
+    /// Get torrents with the given tag (empty string means "without tag"; no "tag" parameter 
+    /// means "any tag". Remember to URL-encode the category name. For example, My tag becomes My%20tag
     #[arg(short, long)]
     pub tag: Option<String>,
+    /// Sort torrents by given key. They can be sorted using any field of the response's JSON 
+    /// array (which are documented below) as the sort key.
     #[arg(short, long)]
     pub sort: Option<String>,
+    /// Enable reverse sorting. Defaults to false
     #[arg(short, long)]
     pub reverse: Option<bool>,
+    /// Limit the number of torrents returned
     #[arg(short, long)]
     pub limit: Option<i32>,
+    /// Set offset (if less than 0, offset from end)
     #[arg(short, long)]
     pub offset: Option<i32>,
+    /// Filter by hashes. Can contain multiple hashes separated by |
     #[arg(long)]
     pub hashes: Option<String>,
 }
