@@ -11,7 +11,7 @@ pub struct Info {
     pub amount_left: i64,
     #[serde(rename = "auto_tmm")]
     pub auto_tmm: bool,
-    pub availability: i64,
+    pub availability: f64,
     pub category: String,
     pub completed: i64,
     #[serde(rename = "completion_on")]
@@ -54,7 +54,7 @@ pub struct Info {
     #[serde(rename = "num_seeds")]
     pub num_seeds: i64,
     pub priority: i64,
-    pub progress: i64,
+    pub progress: f64,
     pub ratio: f64,
     #[serde(rename = "ratio_limit")]
     pub ratio_limit: i64,
