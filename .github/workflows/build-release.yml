@@ -29,41 +29,41 @@ jobs:
       matrix:
         include:
           - target: i686-unknown-linux-musl
-            file: aqu
-            release_name: aqu-${{ needs.prepare_build.outputs.tag_name }}-i686-unknown-linux-musl
+            file: qbt
+            release_name: qbt-${{ needs.prepare_build.outputs.tag_name }}-i686-unknown-linux-musl
           - target: x86_64-pc-windows-gnu
-            file: aqu.exe
-            release_name: aqu-${{ needs.prepare_build.outputs.tag_name }}-x86_64-pc-windows-gnu.exe
+            file: qbt.exe
+            release_name: qbt-${{ needs.prepare_build.outputs.tag_name }}-x86_64-pc-windows-gnu.exe
           - target: x86_64-unknown-linux-gnu
-            file: aqu
-            release_name: aqu-${{ needs.prepare_build.outputs.tag_name }}-x86_64-unknown-linux-gnu
+            file: qbt
+            release_name: qbt-${{ needs.prepare_build.outputs.tag_name }}-x86_64-unknown-linux-gnu
           - target: x86_64-unknown-linux-musl
-            file: aqu
-            release_name: aqu-${{ needs.prepare_build.outputs.tag_name }}-x86_64-unknown-linux-musl
+            file: qbt
+            release_name: qbt-${{ needs.prepare_build.outputs.tag_name }}-x86_64-unknown-linux-musl
           - target: armv7-unknown-linux-musleabihf
-            file: aqu
-            release_name: aqu-${{ needs.prepare_build.outputs.tag_name }}-armv7-unknown-linux-musleabihf
+            file: qbt
+            release_name: qbt-${{ needs.prepare_build.outputs.tag_name }}-armv7-unknown-linux-musleabihf
           - target: armv7-unknown-linux-gnueabihf
-            file: aqu
-            release_name: aqu-${{ needs.prepare_build.outputs.tag_name }}-armv7-unknown-linux-gnueabihf
+            file: qbt
+            release_name: qbt-${{ needs.prepare_build.outputs.tag_name }}-armv7-unknown-linux-gnueabihf
           - target: arm-unknown-linux-gnueabi
-            file: aqu
-            release_name: aqu-${{ needs.prepare_build.outputs.tag_name }}-arm-unknown-linux-gnueabi
+            file: qbt
+            release_name: qbt-${{ needs.prepare_build.outputs.tag_name }}-arm-unknown-linux-gnueabi
           - target: arm-unknown-linux-gnueabihf
-            file: aqu
-            release_name: aqu-${{ needs.prepare_build.outputs.tag_name }}-arm-unknown-linux-gnueabihf
+            file: qbt
+            release_name: qbt-${{ needs.prepare_build.outputs.tag_name }}-arm-unknown-linux-gnueabihf
           - target: arm-unknown-linux-musleabi
-            file: aqu
-            release_name: aqu-${{ needs.prepare_build.outputs.tag_name }}-arm-unknown-linux-musleabi
+            file: qbt
+            release_name: qbt-${{ needs.prepare_build.outputs.tag_name }}-arm-unknown-linux-musleabi
           - target: arm-unknown-linux-musleabihf
-            file: aqu
-            release_name: aqu-${{ needs.prepare_build.outputs.tag_name }}-arm-unknown-linux-musleabihf
+            file: qbt
+            release_name: qbt-${{ needs.prepare_build.outputs.tag_name }}-arm-unknown-linux-musleabihf
           - target: aarch64-unknown-linux-gnu
-            file: aqu
-            release_name: aqu-${{ needs.prepare_build.outputs.tag_name }}-aarch64-unknown-linux-gnu
+            file: qbt
+            release_name: qbt-${{ needs.prepare_build.outputs.tag_name }}-aarch64-unknown-linux-gnu
           - target: aarch64-unknown-linux-musl
-            file: aqu
-            release_name: aqu-${{ needs.prepare_build.outputs.tag_name }}-aarch64-unknown-linux-musl
+            file: qbt
+            release_name: qbt-${{ needs.prepare_build.outputs.tag_name }}-aarch64-unknown-linux-musl
     steps:
       - uses: actions/checkout@v3
 

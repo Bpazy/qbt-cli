@@ -7,7 +7,7 @@ use reqwest::blocking::Client;
 use myserde::Info;
 
 use crate::cli::{Add, Cli, Commands, List};
-use crate::config::AquConfig;
+use crate::config::QbtConfig;
 
 mod cli;
 mod config;
@@ -20,19 +20,19 @@ fn main() -> Result<(), Box<dyn Error>> {
     } else {
         simple_logger::init_with_level(log::Level::Info).unwrap();
     }
-    let aqu_cfg = AquConfig::load();
+    let qbt_cfg = QbtConfig::load();
     match &cli.command {
         Commands::Add(add_cmd) => {
-            add_magnet(&aqu_cfg, add_cmd);
+            add_magnet(&qbt_cfg, add_cmd);
         }
         Commands::List(list_cmd) => {
-            query_torrent_list(&aqu_cfg, list_cmd);
+            query_torrent_list(&qbt_cfg, list_cmd);
         }
     }
     Ok(())
 }
 
-fn add_magnet(config: &AquConfig, add_cmd: &Add) {
+fn add_magnet(config: &QbtConfig, add_cmd: &Add) {
     let resp = login(&config).post(&config.get_add_torrent_url())
         .form(&(
             ("urls", &add_cmd.uri),
@@ -51,7 +51,7 @@ fn add_magnet(config: &AquConfig, add_cmd: &Add) {
 }
 
 
-fn query_torrent_list(config: &AquConfig, cmd: &List) {
+fn query_torrent_list(config: &QbtConfig, cmd: &List) {
     let resp = login(&config).post(&config.get_query_torrent_list_url())
         .form(&get_form(&cmd))
         .send()
@@ -93,7 +93,7 @@ fn get_form(cmd: &List) -> HashMap<&str, String> {
     form
 }
 
-fn login(config: &&AquConfig) -> Client {
+fn login(config: &&QbtConfig) -> Client {
     let client = Client::builder().cookie_store(true).build().unwrap();
     let resp = client.post(&config.get_login_url())
         .form(&(("username", &config.username), ("password", &config.password)))
