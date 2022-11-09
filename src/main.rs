@@ -1,7 +1,9 @@
 use std::collections::HashMap;
 use std::error::Error;
 
+use log::debug;
 use reqwest::blocking::Client;
+
 use myserde::Info;
 
 use crate::cli::{Add, Cli, Commands, List};
@@ -13,6 +15,11 @@ mod myserde;
 
 fn main() -> Result<(), Box<dyn Error>> {
     let cli = Cli::load();
+    if cli.verbose {
+        simple_logger::init_with_level(log::Level::Debug).unwrap();
+    } else {
+        simple_logger::init_with_level(log::Level::Info).unwrap();
+    }
     let aqu_cfg = AquConfig::load();
     match &cli.command {
         Commands::Add(add_cmd) => {
@@ -40,7 +47,7 @@ fn add_magnet(config: &AquConfig, add_cmd: &Add) {
         ))
         .send()
         .expect(format!("Add torrent failed {}", &config.get_add_torrent_url()).as_str());
-    println!("Add torrent result: {:#?}", resp.text().unwrap());
+    debug!("Add torrent result: {:#?}", resp.text().unwrap());
 }
 
 
@@ -50,8 +57,11 @@ fn query_torrent_list(config: &AquConfig, cmd: &List) {
         .send()
         .expect(format!("Query torrent list failed {}", &config.get_query_torrent_list_url()).as_str());
     let text = resp.text().unwrap();
-    let info: Vec<Info> = serde_json::from_str(&text).unwrap();
-    println!("Formatted torrent list: {:#?}", info)
+    debug!("Query torrent list result: {:#?}", &text);
+    let qbt_infos: Vec<Info> = serde_json::from_str(&text).unwrap();
+    for qbt_info in qbt_infos {
+        println!("{}\t{}%", qbt_info.name, (qbt_info.progress * 100 as f64).floor())
+    }
 }
 
 fn get_form(cmd: &List) -> HashMap<&str, String> {
@@ -89,6 +99,6 @@ fn login(config: &&AquConfig) -> Client {
         .form(&(("username", &config.username), ("password", &config.password)))
         .send()
         .expect(format!("Login failed: {}", &config.get_login_url()).as_str());
-    println!("Login result: {:#?}", resp.text().unwrap());
+    debug!("Login result: {:#?}", resp.text().unwrap());
     client
 }

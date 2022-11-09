@@ -1,5 +1,6 @@
 use config::Config;
 use directories::BaseDirs;
+use log::debug;
 use serde::{Deserialize, Serialize};
 use url::Url;
 
@@ -22,7 +23,7 @@ impl AquConfig {
             .expect("Failed to read config file");
 
         let config = settings.try_deserialize::<AquConfig>().expect("Failed to deserialize config file");
-        println!("Loaded config: {:?}", config);
+        debug!("Loaded config: {:?}", config);
         config
     }
 

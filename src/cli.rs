@@ -1,4 +1,5 @@
 use clap::{Args, Parser, Subcommand};
+use log::debug;
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
@@ -58,7 +59,7 @@ fn uri_parser(s: &str) -> Result<String, String> {
 impl Cli {
     pub fn load() -> Cli {
         let r = Cli::parse();
-        println!("Cli: {:?}", &r);
+        debug!("Cli: {:?}", &r);
         r
     }
 }
