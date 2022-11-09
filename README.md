@@ -69,7 +69,7 @@ Options:
   -h, --help
           Print help information
 ```
-### Usage: Get torrent list
+### 3. Usage: Get torrent list
 ```ps1
 PS C:\> qbt list -h
 Get torrent list
