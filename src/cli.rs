@@ -3,7 +3,7 @@ use clap::{Args, Parser, Subcommand};
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
 pub struct Cli {
-    #[arg(short, long)]
+    #[arg(long)]
     pub verbose: bool,
     #[command(subcommand)]
     pub command: Commands,
@@ -41,7 +41,7 @@ pub struct List {
     pub limit: Option<i32>,
     #[arg(short, long)]
     pub offset: Option<i32>,
-    #[arg(short, long)]
+    #[arg(long)]
     pub hashes: Option<String>,
 }
 

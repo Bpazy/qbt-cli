@@ -2,12 +2,14 @@ use std::collections::HashMap;
 use std::error::Error;
 
 use reqwest::blocking::Client;
+use myserde::Info;
 
 use crate::cli::{Add, Cli, Commands, List};
 use crate::config::AquConfig;
 
 mod cli;
 mod config;
+mod myserde;
 
 fn main() -> Result<(), Box<dyn Error>> {
     let cli = Cli::load();
@@ -17,7 +19,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             add_magnet(&aqu_cfg, add_cmd);
         }
         Commands::List(list_cmd) => {
-            list(&aqu_cfg, list_cmd);
+            query_torrent_list(&aqu_cfg, list_cmd);
         }
     }
     Ok(())
@@ -42,12 +44,14 @@ fn add_magnet(config: &AquConfig, add_cmd: &Add) {
 }
 
 
-fn list(config: &AquConfig, cmd: &List) {
-    let resp = login(&config).post(&config.get_add_torrent_url())
+fn query_torrent_list(config: &AquConfig, cmd: &List) {
+    let resp = login(&config).post(&config.get_query_torrent_list_url())
         .form(&get_form(&cmd))
         .send()
-        .expect(format!("Add torrent failed {}", &config.get_add_torrent_url()).as_str());
-    println!("Add torrent result: {:#?}", resp.text().unwrap());
+        .expect(format!("Query torrent list failed {}", &config.get_query_torrent_list_url()).as_str());
+    let text = resp.text().unwrap();
+    let info: Vec<Info> = serde_json::from_str(&text).unwrap();
+    println!("Formatted torrent list: {:#?}", info)
 }
 
 fn get_form(cmd: &List) -> HashMap<&str, String> {
