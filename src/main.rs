@@ -34,20 +34,61 @@ fn main() -> Result<(), Box<dyn Error>> {
 
 fn add_magnet(config: &QbtConfig, add_cmd: &Add) {
     let resp = login(&config).post(&config.get_add_torrent_url())
-        .form(&(
-            ("urls", &add_cmd.uri),
-            ("autoTMM", true),
-            ("cookie", ""),
-            ("rename", &add_cmd.rename),
-            ("category", &add_cmd.category),
-            ("paused", "false"),
-            ("contentLayout", "Original"),
-            ("dlLimit", "NaN"),
-            ("upLimit", "NaN"),
-        ))
+        .form(&get_add_magnet_form(&add_cmd))
         .send()
         .expect(format!("Add torrent failed {}", &config.get_add_torrent_url()).as_str());
     debug!("Add torrent result: {:#?}", resp.text().unwrap());
+}
+
+fn get_add_magnet_form(cmd: &Add) -> HashMap<&str, String> {
+    let mut form: HashMap<&str, String> = HashMap::new();
+    form.insert("urls", cmd.uri.to_string());
+    if let Some(savepath) = &cmd.savepath {
+        form.insert("savepath", savepath.to_string());
+    }
+    if let Some(cookie) = &cmd.cookie {
+        form.insert("cookie", cookie.to_string());
+    }
+    if let Some(category) = &cmd.category {
+        form.insert("category", category.to_string());
+    }
+    if let Some(tags) = &cmd.tags {
+        form.insert("tags", tags.to_string());
+    }
+    if let Some(skip_checking) = &cmd.skip_checking {
+        form.insert("skipChecking", skip_checking.to_string());
+    }
+    if let Some(paused) = &cmd.paused {
+        form.insert("paused", paused.to_string());
+    }
+    if let Some(root_folder) = &cmd.root_folder {
+        form.insert("rootFolder", root_folder.to_string());
+    }
+    if let Some(rename) = &cmd.rename {
+        form.insert("rename", rename.to_string());
+    }
+    if let Some(up_limit) = &cmd.up_limit {
+        form.insert("upLimit", up_limit.to_string());
+    }
+    if let Some(dl_limit) = &cmd.dl_limit {
+        form.insert("dlLimit", dl_limit.to_string());
+    }
+    if let Some(ratio_limit) = &cmd.ratio_limit {
+        form.insert("ratioLimit", ratio_limit.to_string());
+    }
+    if let Some(seeding_time_limit) = &cmd.seeding_time_limit {
+        form.insert("seedingTimeLimit", seeding_time_limit.to_string());
+    }
+    if let Some(auto_tmm) = &cmd.auto_tmm {
+        form.insert("autoTmm", auto_tmm.to_string());
+    }
+    if let Some(sequential_download) = &cmd.sequential_download {
+        form.insert("sequentialDownload", sequential_download.to_string());
+    }
+    if let Some(first_last_piece_prio) = &cmd.first_last_piece_prio {
+        form.insert("firstLastPiecePrio", first_last_piece_prio.to_string());
+    }
+    form
 }
 
 
