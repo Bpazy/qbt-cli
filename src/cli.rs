@@ -58,7 +58,7 @@ pub struct Add {
     pub seeding_time_limit: Option<i64>,
     /// Whether Automatic Torrent Management should be used
     #[arg(long)]
-    pub auto_tmm: Option<bool>,
+    pub auto_tmm: bool,
     /// Enable sequential download. Possible values are true, false (default)
     #[arg(long)]
     pub sequential_download: Option<String>,
@@ -93,7 +93,7 @@ pub struct List {
     pub sort: Option<String>,
     /// Enable reverse sorting. Defaults to false
     #[arg(short, long)]
-    pub reverse: Option<bool>,
+    pub reverse: bool,
     /// Limit the number of torrents returned
     #[arg(short, long)]
     pub limit: Option<i32>,
