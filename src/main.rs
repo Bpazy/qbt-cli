@@ -1,6 +1,6 @@
 use std::error::Error;
 
-use crate::cli::Cli;
+use crate::cli::{Add, Cli, Commands};
 use crate::config::AquConfig;
 
 mod cli;
@@ -8,11 +8,15 @@ mod config;
 
 fn main() -> Result<(), Box<dyn Error>> {
     let cli = Cli::load();
-    go_qbittorrent(AquConfig::load(), &cli);
+    match &cli.command {
+        Commands::Add(add) => {
+            add_magnet(AquConfig::load(), add);
+        }
+    }
     Ok(())
 }
 
-fn go_qbittorrent(config: AquConfig, cli: &Cli) {
+fn add_magnet(config: AquConfig, add: &Add) {
     let client = reqwest::blocking::Client::builder().cookie_store(true).build().unwrap();
     let resp = client.post(&config.get_login_url())
         .form(&(("username", &config.username), ("password", &config.password)))
@@ -22,11 +26,11 @@ fn go_qbittorrent(config: AquConfig, cli: &Cli) {
 
     let resp = client.post(&config.get_add_torrent_url())
         .form(&(
-            ("urls", &cli.uri),
+            ("urls", &add.uri),
             ("autoTMM", true),
             ("cookie", ""),
-            ("rename", &cli.rename),
-            ("category", &cli.category),
+            ("rename", &add.rename),
+            ("category", &add.category),
             ("paused", "false"),
             ("contentLayout", "Original"),
             ("dlLimit", "NaN"),

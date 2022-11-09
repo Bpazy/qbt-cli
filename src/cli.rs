@@ -1,10 +1,21 @@
-use clap::Parser;
+use clap::{Args, Parser, Subcommand};
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
 pub struct Cli {
     #[arg(short, long)]
     pub verbose: bool,
+    #[command(subcommand)]
+    pub command: Commands,
+}
+
+#[derive(Subcommand, Debug)]
+pub enum Commands {
+    Add(Add)
+}
+
+#[derive(Args, Debug)]
+pub struct Add {
     #[arg(short, long, default_value_t = String::from(""))]
     pub rename: String,
     #[arg(short, long, default_value_t = String::from(""))]
