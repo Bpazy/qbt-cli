@@ -8,6 +8,13 @@ A cli to manage qBittorrent
 ```
 cargo install qbt --git https://github.com/Bpazy/qbt-cli 
 ```
+Or download latest stable release version from [release page](https://github.com/Bpazy/qbt-cli/releases). And put it under the `$PATH`.
+
+Linux example:
+```
+wget -O /usr/local/bin/qbt https://github.com/Bpazy/qbt-cli/releases/latest/download/qbt-${REPLACE_ME_WITH_VERSION}-x86_64-unknown-linux-gnu
+chmod +x /usr/local/bin/qbt
+```
 
 ## Usage
 ### 1. Usage: Overview
