@@ -99,7 +99,7 @@ fn query_torrent_list(config: &QbtConfig, cmd: &List) {
     debug!("Query torrent list result: {:#?}", &text);
     let qbt_infos: Vec<Info> = serde_json::from_str(&text).unwrap();
     for qbt_info in qbt_infos {
-        println!("{}\t{}\t{:.1}%\t{}", qbt_info.hash, qbt_info.name, qbt_info.progress * 100 as f64, qbt_info.state);
+        println!("{} {:4.1}% {:>11} {}", qbt_info.hash, qbt_info.progress * 100 as f64, qbt_info.state, qbt_info.name);
     }
 }
 
