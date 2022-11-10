@@ -43,6 +43,7 @@ fn add_magnet(config: &QbtConfig, add_cmd: &Add) {
 fn get_add_magnet_form(cmd: &Add) -> HashMap<&str, String> {
     let mut form: HashMap<&str, String> = HashMap::new();
     form.insert("urls", cmd.uri.to_string());
+    form.insert("autoTmm", cmd.auto_tmm.to_string());
     if let Some(savepath) = &cmd.savepath {
         form.insert("savepath", savepath.to_string());
     }
@@ -79,9 +80,6 @@ fn get_add_magnet_form(cmd: &Add) -> HashMap<&str, String> {
     if let Some(seeding_time_limit) = &cmd.seeding_time_limit {
         form.insert("seedingTimeLimit", seeding_time_limit.to_string());
     }
-    if let Some(auto_tmm) = &cmd.auto_tmm {
-        form.insert("autoTmm", auto_tmm.to_string());
-    }
     if let Some(sequential_download) = &cmd.sequential_download {
         form.insert("sequentialDownload", sequential_download.to_string());
     }
@@ -94,7 +92,7 @@ fn get_add_magnet_form(cmd: &Add) -> HashMap<&str, String> {
 
 fn query_torrent_list(config: &QbtConfig, cmd: &List) {
     let resp = login(&config).post(&config.get_query_torrent_list_url())
-        .form(&get_form(&cmd))
+        .form(&get_query_torrent_list_form(&cmd))
         .send()
         .expect(format!("Query torrent list failed {}", &config.get_query_torrent_list_url()).as_str());
     let text = resp.text().unwrap();
@@ -105,8 +103,9 @@ fn query_torrent_list(config: &QbtConfig, cmd: &List) {
     }
 }
 
-fn get_form(cmd: &List) -> HashMap<&str, String> {
+fn get_query_torrent_list_form(cmd: &List) -> HashMap<&str, String> {
     let mut form: HashMap<&str, String> = HashMap::new();
+    form.insert("reverse", cmd.reverse.to_string());
     if let Some(filter) = &cmd.filter {
         form.insert("filter", filter.to_string());
     }
@@ -118,9 +117,6 @@ fn get_form(cmd: &List) -> HashMap<&str, String> {
     }
     if let Some(sort) = &cmd.sort {
         form.insert("sort", sort.to_string());
-    }
-    if let Some(reverse) = &cmd.reverse {
-        form.insert("reverse", reverse.to_string());
     }
     if let Some(limit) = &cmd.limit {
         form.insert("limit", limit.to_string());

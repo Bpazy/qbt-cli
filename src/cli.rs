@@ -5,7 +5,7 @@ use log::debug;
 #[command(author, version, about, long_about = None)]
 pub struct Cli {
     /// Use verbose output
-    #[arg(long)]
+    #[arg(long, default_value_t = false)]
     pub verbose: bool,
     #[command(subcommand)]
     pub command: Commands,
@@ -57,7 +57,7 @@ pub struct Add {
     #[arg(long)]
     pub seeding_time_limit: Option<i64>,
     /// Whether Automatic Torrent Management should be used
-    #[arg(long)]
+    #[arg(long, default_value_t = false)]
     pub auto_tmm: bool,
     /// Enable sequential download. Possible values are true, false (default)
     #[arg(long)]
@@ -92,7 +92,7 @@ pub struct List {
     #[arg(short, long)]
     pub sort: Option<String>,
     /// Enable reverse sorting. Defaults to false
-    #[arg(short, long)]
+    #[arg(short, long, default_value_t = false)]
     pub reverse: bool,
     /// Limit the number of torrents returned
     #[arg(short, long)]
