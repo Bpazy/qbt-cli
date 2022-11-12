@@ -12,7 +12,7 @@ Or download latest stable release version from [release page](https://github.com
 
 Linux example:
 ```
-wget -O /usr/local/bin/qbt https://github.com/Bpazy/qbt-cli/releases/latest/download/qbt-${REPLACE_ME_WITH_VERSION}-x86_64-unknown-linux-gnu
+wget -O /usr/local/bin/qbt https://github.com/Bpazy/qbt-cli/releases/latest/download/qbt-${REPLACE_ME_WITH_VERSION}-linux-amd64
 chmod +x /usr/local/bin/qbt
 ```
 
