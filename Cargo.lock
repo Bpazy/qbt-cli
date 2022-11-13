@@ -743,6 +743,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "qbittorrent-rs"
+version = "0.1.0"
+dependencies = [
+ "clap",
+ "log",
+ "reqwest",
+ "serde",
+ "serde_json",
+ "url",
+]
+
+[[package]]
 name = "qbt"
 version = "0.1.0"
 dependencies = [
@@ -750,6 +762,7 @@ dependencies = [
  "config",
  "directories",
  "log",
+ "qbittorrent-rs",
  "reqwest",
  "serde",
  "serde_json",

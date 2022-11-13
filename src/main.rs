@@ -1,8 +1,5 @@
 use std::error::Error;
 
-use log::debug;
-use reqwest::blocking::Client;
-
 use crate::cli::cli::{Cli, Commands};
 use crate::config::QbtConfig;
 
@@ -26,14 +23,4 @@ fn main() -> Result<(), Box<dyn Error>> {
         }
     }
     Ok(())
-}
-
-fn login(config: &&QbtConfig) -> Client {
-    let client = Client::builder().cookie_store(true).build().unwrap();
-    let resp = client.post(&config.get_login_url())
-        .form(&(("username", &config.username), ("password", &config.password)))
-        .send()
-        .expect(format!("Login failed: {}", &config.get_login_url()).as_str());
-    debug!("Login result: {:#?}", resp.text().unwrap());
-    client
 }

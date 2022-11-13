@@ -1,9 +1,10 @@
 use std::collections::HashMap;
 
-use clap::{Args};
-use log::debug;
+use clap::Args;
 
-use crate::{login, QbtConfig};
+use qbittorrent_rs::QbtClient;
+
+use crate::QbtConfig;
 
 /// Add new torrent
 #[derive(Args, Debug)]
@@ -70,11 +71,8 @@ fn uri_parser(s: &str) -> Result<String, String> {
 
 impl Add {
     pub fn add_magnet(&self, config: &QbtConfig) {
-        let resp = login(&config).post(&config.get_add_torrent_url())
-            .form(&self.get_add_magnet_form())
-            .send()
-            .expect(format!("Add torrent failed {}", &config.get_add_torrent_url()).as_str());
-        debug!("Add torrent result: {:#?}", resp.text().unwrap());
+        let qbt_client = QbtClient::login(&config.qbittorrent_host, &config.username, &config.password).unwrap();
+        qbt_client.add_magnet(&self.get_add_magnet_form()).unwrap();
     }
 
     fn get_add_magnet_form(&self) -> HashMap<&str, String> {
