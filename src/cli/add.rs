@@ -4,8 +4,6 @@ use clap::Args;
 
 use qbittorrent_rs::QbtClient;
 
-use crate::QbtConfig;
-
 /// Add new torrent
 #[derive(Args, Debug)]
 pub struct Add {
@@ -70,9 +68,8 @@ fn uri_parser(s: &str) -> Result<String, String> {
 }
 
 impl Add {
-    pub fn add_magnet(&self, config: &QbtConfig) {
-        let qbt_client = QbtClient::login(&config.qbittorrent_host, &config.username, &config.password).unwrap();
-        qbt_client.add_magnet(&self.get_add_magnet_form()).unwrap();
+    pub fn add_magnet(&self, client: &QbtClient) {
+        client.add_magnet(&self.get_add_magnet_form()).unwrap();
     }
 
     fn get_add_magnet_form(&self) -> HashMap<&str, String> {

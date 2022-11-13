@@ -4,8 +4,6 @@ use clap::Args;
 
 use qbittorrent_rs::QbtClient;
 
-use crate::QbtConfig;
-
 /// Get torrent list
 #[derive(Args, Debug)]
 pub struct List {
@@ -42,9 +40,8 @@ pub struct List {
 }
 
 impl List {
-    pub fn query_torrent_list(&self, config: &QbtConfig) {
-        let qbt_client = QbtClient::login(&config.qbittorrent_host, &config.username, &config.password).unwrap();
-        let qbt_infos = qbt_client.query_torrent_list(&self.get_query_torrent_list_form()).unwrap();
+    pub fn query_torrent_list(&self, client: &QbtClient) {
+        let qbt_infos = client.query_torrent_list(&self.get_query_torrent_list_form()).unwrap();
         for qbt_info in qbt_infos {
             println!("{} {:4.1}% {:>11} {}", qbt_info.hash, qbt_info.progress * 100 as f64, qbt_info.state, qbt_info.name);
         }

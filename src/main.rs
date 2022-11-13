@@ -1,4 +1,5 @@
 use std::error::Error;
+use qbittorrent_rs::QbtClient;
 
 use crate::cli::cli::{Cli, Commands};
 use crate::config::QbtConfig;
@@ -14,12 +15,13 @@ fn main() -> Result<(), Box<dyn Error>> {
         simple_logger::init_with_level(log::Level::Info).unwrap();
     }
     let qbt_cfg = QbtConfig::load();
+    let qbt_client = QbtClient::login(&qbt_cfg.qbittorrent_host, &qbt_cfg.username, &qbt_cfg.password)?;
     match &cli.command {
         Commands::Add(cmd) => {
-            cmd.add_magnet(&qbt_cfg);
+            cmd.add_magnet(&qbt_client);
         }
         Commands::List(cmd) => {
-            cmd.query_torrent_list(&qbt_cfg);
+            cmd.query_torrent_list(&qbt_client);
         }
     }
     Ok(())
