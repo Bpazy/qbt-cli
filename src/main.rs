@@ -18,8 +18,8 @@ fn main() -> Result<(), Box<dyn Error>> {
 
 fn set_logger_level(cli: &Cli) {
     if cli.verbose {
-        simple_logger::init_with_level(log::Level::Debug)?;
+        simple_logger::init_with_level(log::Level::Debug).unwrap();
     } else {
-        simple_logger::init_with_level(log::Level::Info)?;
+        simple_logger::init_with_level(log::Level::Info).unwrap();
     }
 }
