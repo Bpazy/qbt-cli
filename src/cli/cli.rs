@@ -1,6 +1,8 @@
 use clap::{Parser, Subcommand};
 use log::debug;
 
+use qbittorrent_rs::QbtClient;
+
 use crate::cli::add::Add;
 use crate::cli::list::List;
 
@@ -18,6 +20,19 @@ pub struct Cli {
 pub enum Commands {
     Add(Add),
     List(List),
+}
+
+impl Commands {
+    pub fn exec(&self, qbt_client: &QbtClient) {
+        match &self {
+            Commands::Add(cmd) => {
+                cmd.add_magnet(qbt_client);
+            }
+            Commands::List(cmd) => {
+                cmd.query_torrent_list(qbt_client);
+            }
+        }
+    }
 }
 
 
