@@ -14,10 +14,10 @@ pub struct Add {
     #[arg(long)]
     pub cookie: Option<String>,
     /// Category for the torrent
-    #[arg(long)]
+    #[arg(long, short)]
     pub category: Option<String>,
     /// Tags for the torrent, split by ','
-    #[arg(long)]
+    #[arg(long, short)]
     pub tags: Option<String>,
     /// Skip hash checking. Possible values are true, false (default)
     #[arg(long)]
@@ -29,7 +29,7 @@ pub struct Add {
     #[arg(long)]
     pub root_folder: Option<String>,
     /// Rename torrent
-    #[arg(long)]
+    #[arg(long, short)]
     pub rename: Option<String>,
     /// Set torrent upload speed limit. Unit in bytes/second
     #[arg(long)]
