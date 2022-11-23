@@ -2,7 +2,7 @@
 [![Build And Test](https://github.com/Bpazy/qbt-cli/actions/workflows/build-and-test.yml/badge.svg)](https://github.com/Bpazy/qbt-cli/actions/workflows/build-and-test.yml)
 ![LICENSE](https://img.shields.io/github/license/Bpazy/qbt-cli)
 
-A cli to manage qBittorrent
+A cli to manage qBittorrent.
 
 ## Install
 ```
