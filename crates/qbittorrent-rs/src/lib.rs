@@ -52,12 +52,25 @@ impl QbtClient {
         Ok(())
     }
 
+    pub fn delete_torrent(&self, params: &HashMap<&str, String>) -> Result<(), Box<dyn Error>> {
+        let resp = self.reqwest_client.as_ref().expect("Login needed").post(&self.get_delete_torrent_url())
+            .form(&params)
+            .send()
+            .expect(format!("Delete torrent failed {}", &self.get_delete_torrent_url()).as_str());
+        debug!("Delete torrent result: {:#?}", resp.text()?);
+        Ok(())
+    }
+
     fn get_login_url(&self) -> String {
         self.get_parsed_host().join("/api/v2/auth/login").unwrap().to_string()
     }
 
     fn get_add_torrent_url(&self) -> String {
         self.get_parsed_host().join("/api/v2/torrents/add").unwrap().to_string()
+    }
+
+    fn get_delete_torrent_url(&self) -> String {
+        self.get_parsed_host().join("/api/v2/torrents/delete").unwrap().to_string()
     }
 
     fn get_query_torrent_list_url(&self) -> String {

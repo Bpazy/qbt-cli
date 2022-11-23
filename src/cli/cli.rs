@@ -5,6 +5,7 @@ use qbittorrent_rs::QbtClient;
 
 use crate::cli::add::Add;
 use crate::cli::list::List;
+use crate::cli::delete::Delete;
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
@@ -20,6 +21,7 @@ pub struct Cli {
 pub enum Commands {
     Add(Add),
     List(List),
+    Delete(Delete),
 }
 
 impl Commands {
@@ -30,6 +32,9 @@ impl Commands {
             }
             Commands::List(cmd) => {
                 cmd.query_torrent_list(qbt_client);
+            }
+            Commands::Delete(cmd) => {
+                cmd.delete_torrent(qbt_client);
             }
         }
     }
