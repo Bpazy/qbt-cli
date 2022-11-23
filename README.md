@@ -95,6 +95,21 @@ Options:
   -h, --help                 Print help information
 ```
 
+### 4. Usage: Delete torrent
+```
+PS C:\> qbt delete -h
+Delete torrent
+
+Usage: qbt.exe delete [OPTIONS] <HASHES>
+
+Arguments:
+  <HASHES>  The hashes of the torrents you want to delete. `hashes` can contain multiple hashes separated by `|`, to delete multiple torrents, or set to all, to delete all torrents
+
+Options:
+  -f, --delete-files  If set to true, the downloaded data will also be deleted, otherwise has no effect
+  -h, --help          Print help information
+```
+
 ## Configure
 `$HOME/.config/qbt/config.toml`:
 ```toml
