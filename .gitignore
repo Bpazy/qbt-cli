@@ -7,3 +7,5 @@
 # Added by cargo
 /target
 crates/qbittorrent-rs/target
+
+crates/**/Cargo.lock
