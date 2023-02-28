@@ -43,7 +43,7 @@ impl List {
     pub fn query_torrent_list(&self, client: &QbtClient) {
         let qbt_infos = client.query_torrent_list(&self.get_query_torrent_list_form()).unwrap();
         for qbt_info in qbt_infos {
-            println!("{} {:4.1}% {:>11} {}", qbt_info.hash, qbt_info.progress * 100 as f64, qbt_info.state, qbt_info.name);
+            println!("{} {:4.1}% {:>11} {:4.2}MiB/s {}", qbt_info.hash, qbt_info.progress * 100 as f64, qbt_info.state, qbt_info.dlspeed as f64 / 1024.0 / 1024.0, qbt_info.name);
         }
     }
 
