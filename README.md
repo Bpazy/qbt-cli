@@ -13,7 +13,7 @@ scoop install qpt-cli
 
 ### Install from cargo
 ```sh
-cargo install qbt-cli
+cargo install qbt
 ```
 
 ### Install from download
