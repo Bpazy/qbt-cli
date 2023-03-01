@@ -2,6 +2,9 @@
 name = "qbittorrent-rs"
 version = "0.1.3"
 edition = "2021"
+description = "Qbittorrent API SDK for Rust"
+repository = "https://github.com/Bpazy/qbt-cli/crates/qbittorrent-rs"
+license = "GPL-3.0"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
