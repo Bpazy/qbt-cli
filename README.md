@@ -4,11 +4,20 @@
 
 A cli to manage qBittorrent.
 
-## Install
+## Installing qbt-cli
+### Install from package
+#### Windows
+```ps1
+scoop install qpt-cli
 ```
+
+### Install from cargo
+```sh
 cargo install qbt --git https://github.com/Bpazy/qbt-cli 
 ```
-Or download latest stable release version from [release page](https://github.com/Bpazy/qbt-cli/releases). And put it under the `$PATH`.
+
+### Install from download
+Download latest stable release version from [release page](https://github.com/Bpazy/qbt-cli/releases). And put it under the `$PATH`.
 
 Linux example:
 ```
