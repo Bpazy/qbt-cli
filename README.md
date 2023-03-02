@@ -8,7 +8,7 @@ A cli to manage qBittorrent.
 ### Install from package
 #### Windows
 ```ps1
-scoop install qpt-cli
+scoop install https://raw.githubusercontent.com/Bpazy/qbt-cli/master/qbt-cli.json
 ```
 
 ### Install from cargo
