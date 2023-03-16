@@ -25,6 +25,18 @@ wget -O /usr/local/bin/qbt https://github.com/Bpazy/qbt-cli/releases/latest/down
 chmod +x /usr/local/bin/qbt
 ```
 
+## Exmaple
+### 1. Example: List all magnets
+```sh
+$ qbt list
+36ef3f773e0916beea0946913462c32f5b927635  0.0%      metaDL 0.00MiB/s 神探伽利略禁断的魔术.mkv
+```
+
+### 2. Example: Delete all magnets
+```sh
+qbt list | awk '{print $1}' | xargs -n 1 qbt delete
+```
+
 ## Usage
 ### 1. Usage: Overview
 ```ps1
