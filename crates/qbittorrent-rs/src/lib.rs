@@ -48,7 +48,7 @@ impl QbtClient {
             .form(&params)
             .send()
             .expect(format!("Add torrent failed {}", &self.get_add_torrent_url()).as_str());
-        debug!("Add torrent result: {:#?}", resp.text()?);
+        debug!("Add torrent status: {:#?}, text: {:#?}", resp.status(), resp.text()?);
         Ok(())
     }
 
@@ -57,7 +57,7 @@ impl QbtClient {
             .form(&params)
             .send()
             .expect(format!("Delete torrent failed {}", &self.get_delete_torrent_url()).as_str());
-        debug!("Delete torrent result: {:#?}", resp.text()?);
+        debug!("Delete torrent status: {:#?}, text: {:#?}", resp.status(), resp.text()?);
         Ok(())
     }
 
