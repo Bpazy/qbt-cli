@@ -69,7 +69,12 @@ fn uri_parser(s: &str) -> Result<String, String> {
 
 impl Add {
     pub fn add_magnet(&self, client: &QbtClient) {
-        client.add_magnet(&self.get_add_magnet_form()).unwrap();
+        match client.add_magnet(&self.get_add_magnet_form()) {
+            Ok(()) => {},
+            Err(error) => {
+                println!("Add magnet failed message: {}", error)
+            }
+        }
     }
 
     fn get_add_magnet_form(&self) -> HashMap<&str, String> {

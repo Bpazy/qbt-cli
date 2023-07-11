@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 use std::error::Error;
 
+use clap::error::ContextValue::Strings;
 use log::debug;
 use reqwest::blocking::Client;
 use serde::Deserialize;
@@ -14,6 +15,7 @@ pub struct QbtClient {
     reqwest_client: Option<Client>,
 }
 
+const FAILS: &'static str = "Fails.";
 
 impl QbtClient {
     pub fn login(qbittorrent_host: &str, username: &str, password: &str) -> Result<QbtClient, Box<dyn Error>> {
@@ -48,7 +50,11 @@ impl QbtClient {
             .form(&params)
             .send()
             .expect(format!("Add torrent failed {}", &self.get_add_torrent_url()).as_str());
-        debug!("Add torrent status: {:#?}, text: {:#?}", resp.status(), resp.text()?);
+        let (status, text) = (resp.status(), resp.text()?);
+        debug!("Add torrent status: {:#?}, text: {:#?}", status, text);
+        if !status.is_success() || text.contains(FAILS) {
+            Err(text)?
+        }
         Ok(())
     }
 
