@@ -1,7 +1,6 @@
 use std::collections::HashMap;
 use std::error::Error;
 
-use clap::error::ContextValue::Strings;
 use log::debug;
 use reqwest::blocking::Client;
 use serde::Deserialize;
