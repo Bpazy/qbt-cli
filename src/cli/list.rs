@@ -1,8 +1,11 @@
 use std::collections::HashMap;
+use std::error::Error;
 
 use clap::Args;
 
 use qbittorrent_rs::QbtClient;
+
+use chrono::{Duration, Utc};
 
 /// Get torrent list
 #[derive(Args, Debug)]
@@ -37,13 +40,39 @@ pub struct List {
     /// Filter by hashes. Can contain multiple hashes separated by |
     #[arg(long)]
     pub hashes: Option<String>,
+    /// Filter by age. Number + 'd' for days, 'h' for hours. Prefix with "<" for newer than,
+    /// ">" (or no prefix) for older than. Examples: "7d", "<16h"
+    #[arg(long)]
+    pub age: Option<String>,
 }
 
 impl List {
     pub fn query_torrent_list(&self, client: &QbtClient) {
-        let qbt_infos = client.query_torrent_list(&self.get_query_torrent_list_form()).unwrap();
+        let added_before = self
+            .age
+            .as_ref()
+            .map(|s| Self::parse_duration(s).unwrap())
+            .map(|duration| (Utc::now() - duration).timestamp());
+
+        let qbt_infos = client
+            .query_torrent_list(&self.get_query_torrent_list_form())
+            .unwrap();
+
         for qbt_info in qbt_infos {
-            println!("{} {:4.1}% {:>11} {:4.2}MiB/s {}", qbt_info.hash, qbt_info.progress * 100 as f64, qbt_info.state, qbt_info.dlspeed as f64 / 1024.0 / 1024.0, qbt_info.name);
+            if let Some(added_before) = added_before {
+                if qbt_info.added_on >= added_before {
+                    continue;
+                }
+            }
+            println!(
+                "{} {} {:4.1}% {:>11} {:4.2}MiB/s {}",
+                qbt_info.hash,
+                qbt_info.added_on,
+                qbt_info.progress * 100 as f64,
+                qbt_info.state,
+                qbt_info.dlspeed as f64 / 1024.0 / 1024.0,
+                qbt_info.name
+            );
         }
     }
 
@@ -72,5 +101,25 @@ impl List {
             form.insert("hashes", hashes.to_string());
         }
         form
+    }
+
+    fn parse_duration(s: &str) -> Result<Duration, Box<dyn Error>> {
+        let (spec, num) = s
+            .chars()
+            .next()
+            .map(|c| match c {
+                '>' | '<' => (c, &s[1..]),
+                _ => ('>', s),
+            })
+            .unwrap_or(('>', s));
+        let (num, unit) = num.split_at(num.len() - 1);
+        let num = num.parse::<i64>()?;
+        let duration = match unit {
+            "d" => Duration::days(num),
+            "h" => Duration::hours(num),
+            _ => return Err("Specify 'd' for days, 'h' for hours. Example: 7d".into()),
+        };
+        let signed_duration = if spec == '<' { -duration } else { duration };
+        Ok(signed_duration)
     }
 }

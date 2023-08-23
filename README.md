@@ -113,6 +113,7 @@ Options:
   -l, --limit <LIMIT>        Limit the number of torrents returned
   -o, --offset <OFFSET>      Set offset (if less than 0, offset from end)
       --hashes <HASHES>      Filter by hashes. Can contain multiple hashes separated by |
+      --age <AGE>            Filter by age. Number + 'd' for days, 'h' for hours. Prefix with "<" for newer than, ">" (or no prefix) for older than. Examples: "7d", "<16h"
   -h, --help                 Print help information
 ```
 
