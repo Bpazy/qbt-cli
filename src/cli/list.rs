@@ -48,19 +48,17 @@ pub struct List {
 
 impl List {
     pub fn query_torrent_list(&self, client: &QbtClient) {
-        let added_before = self
-            .age
-            .as_ref()
-            .map(|s| Self::parse_duration(s).unwrap())
-            .map(|duration| (Utc::now() - duration).timestamp());
+        let age_filter = self.age.as_ref().map(|s| Self::parse_age(s).unwrap());
 
         let qbt_infos = client
             .query_torrent_list(&self.get_query_torrent_list_form())
             .unwrap();
 
         for qbt_info in qbt_infos {
-            if let Some(added_before) = added_before {
-                if qbt_info.added_on >= added_before {
+            if let Some(age_filter) = age_filter {
+                if qbt_info.added_on * age_filter.signum()
+                    > (Utc::now().timestamp() - age_filter.abs()) * age_filter.signum()
+                {
                     continue;
                 }
             }
@@ -103,7 +101,7 @@ impl List {
         form
     }
 
-    fn parse_duration(s: &str) -> Result<Duration, Box<dyn Error>> {
+    fn parse_age(s: &str) -> Result<i64, Box<dyn Error>> {
         let (spec, num) = s
             .chars()
             .next()
@@ -114,12 +112,19 @@ impl List {
             .unwrap_or(('>', s));
         let (num, unit) = num.split_at(num.len() - 1);
         let num = num.parse::<i64>()?;
+        if num < 0 {
+            return Err("Age must be positive".into());
+        }
         let duration = match unit {
             "d" => Duration::days(num),
             "h" => Duration::hours(num),
             _ => return Err("Specify 'd' for days, 'h' for hours. Example: 7d".into()),
         };
-        let signed_duration = if spec == '<' { -duration } else { duration };
-        Ok(signed_duration)
+        let age = if spec == '<' {
+            -duration.num_seconds()
+        } else {
+            duration.num_seconds()
+        };
+        Ok(age)
     }
 }
